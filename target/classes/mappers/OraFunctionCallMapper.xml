@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hsys.ham.repository.OraFunctionCallRepository">
+
+	<!-- Result Map -->
+	<resultMap id="DeptDaoResult" type="DeptDao">
+		<result property="expObjmCd" column="object_cd" />
+		<result property="objmNm" column="object_nm" />
+	</resultMap>
+	
+	
+
+	
+	<!-- 법인카드 체크 함수 -->
+	<select id="getRegisteredCardDaoByCompCdAndEmpNoAndCardNoAndCardCompCd" statementType="CALLABLE" resultType="RegisteredCardDao">  
+		SELECT * 
+			FROM TABLE(
+				FN_CHECK_CARD(	#{compCd},
+								#{empNo}, #{cardNo} , #{cardCompCd}	))
+    </select>
+	
+	
+	
+	<!-- 계정 조회  -->
+	<select id="getAcntDaosWithSuggestionsByCompCdAndEmpNoAndVendorNm" statementType="CALLABLE" resultType="AcntDao">  
+		SELECT * 
+			FROM TABLE(
+				FN_GET_ACNT5(	#{compCd},
+								#{empNo},#{vendorNm}	))
+    </select>
+    
+    <!-- 계정 조회 (검색용) -->
+	<select id="getAcntDaosByCompCdAndAcntCdOrAcntNmAndOffsetAndLimit" statementType="CALLABLE" resultType="AcntDao">  
+		SELECT * 
+			FROM TABLE(
+				FN_GET_ACNT3(	#{compCd},
+								#{acntCd},#{acntNm},#{offset},#{limit}	))
+    </select>
+
+
+
+	<!-- 예산 조회  -->
+	<select id="getBudgetDaoByCompCdAndDeptCdAndAcntCdAndYearAndQuater" statementType="CALLABLE" resultType="BudgetDao">  
+		SELECT * 
+			FROM TABLE(
+				FN_GET_BUDGET(	#{compCd},
+								#{deptCd},#{acntCd},#{year},#{quater}	))
+    </select>
+    
+    <!-- 예산 조회  -->
+	<select id="getBudgetDaosByCompCdAndDeptCdAndAcntCdAndYearAndQuater" statementType="CALLABLE" resultType="BudgetDao">  
+		SELECT * 
+			FROM TABLE(
+				FN_GET_BUDGET(	#{compCd},
+								#{deptCd},#{acntCd},#{year},#{quater}	))
+    </select>
+		
+
+
+	<!-- 출장품의 조회 -->
+	<select id="getTripDaosByCompCdAndEmpNoAndDate" statementType="CALLABLE" resultType="TripDao">  
+		SELECT * 
+			FROM TABLE(
+				FN_GET_BUSI_TRIP1(	#{compCd},
+								#{empNo},#{date}	))
+    </select>
+	
+	<!-- 출장품의 조회(검색용) -->
+	
+	<select id="getTripDaosByCompCdAndEmpNoAndTripNmAndOffsetAndLimit" statementType="CALLABLE" resultType="TripDao">  
+		SELECT * 
+			FROM TABLE(
+				FN_GET_BUSI_TRIP2(	#{compCd},
+								#{empNo},#{tripNm},#{offset},#{limit}	))
+    </select>
+    
+    
+   	<!-- 출장품의 조회(ID 조회) -->
+    <select id="getTripDaoByCompCdAndTripCdAndDeptCd" statementType="CALLABLE" resultType="TripDao">  
+		SELECT * 
+			FROM TABLE(
+				FN_GET_BUSI_TRIP3(	#{compCd},
+								#{tripCd},#{deptCd}	))
+    </select>
+    
+   	<!-- 출장품의 조회(return 출장 1개) -->
+    <select id="getRecentOneTripDaoByCompCdAndEmpNo" statementType="CALLABLE" resultType="TripDao">  
+		SELECT * 
+			FROM TABLE(
+				FN_GET_BUSI_TRIP5(	#{compCd},#{empNo}	))
+    </select>
+    
+    
+    
+    <!-- 부서조회(검색용) -->
+    <select id="getDeptDaosByCompCdAndEmpNoAndDeptNmAndOffsetAndLimit" statementType="CALLABLE" resultMap="DeptDaoResult">  
+		SELECT * 
+			FROM TABLE(
+				FN_GET_DEPT(	#{compCd},
+								#{empNo},#{deptNm},#{offset},#{limit}	))
+    </select>
+    
+    <!-- 부서조회(검색용) -->
+    <select id="getBudgetCheckDaoByCompCdAndPosDateAndDeptCdAndAcntCdAndAmtTotOrTripCd" statementType="CALLABLE" resultType="BudgetCheckDao">  
+		SELECT * 
+			FROM TABLE(
+				FN_CHECK_BUDGET(	#{compCd},
+								#{posDate},#{deptCd},#{acntCd},#{amtTot},#{tripCd}	))
+    </select>
+    
+    <select id="modifyAcntSuggestionByCompCdAndEmpNoAndVendorNmAndAcntCd" statementType="CALLABLE">
+    	{
+    		CALL SP_SUGGEST_UPDATE(
+                #{compCd},
+                #{empNo},
+                #{vendorNm},
+                #{acntCd}
+            )
+    	}
+    </select>
+    
+    <!-- erp interface insert 프로시져 호출-->
+    <select id="saveSlipErpInterfaceByCompCdAndExpTypeAndMngNoMobile" statementType="CALLABLE">
+    	{
+    		CALL SP_SLIP_SEND_TO_ERP(
+                #{compCd},
+                #{expType},
+                #{mngNoMobile}
+            )
+    	}
+    </select>
+    
+    <update id="modifySlipErpInterface">
+		update	SLIP_ERP_INTERFACE
+			set HAAM_DEL_YN = 'Y'
+		    where	MNG_NO_MOBILE	=	#{mngNoMobile}
+	</update>
+    
+    
+    
+</mapper>

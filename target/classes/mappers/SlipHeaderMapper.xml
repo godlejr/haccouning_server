@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hsys.ham.repository.SlipHeaderRepository">
+	
+	<resultMap id="SlipHeaderDaoResult" type="SlipHeaderDao">
+		<id property="mngNoMobile" column="sh_mng_no_mobile" />
+
+		<result property="compCd" column="sh_comp_cd" />
+		<result property="posDate" column="sh_pos_date" />
+		<result property="eviDate" column="sh_evi_date" />
+		<result property="textH" column="sh_text_h"/>
+		<result property="siteCd" column="sh_site_cd" />
+		<result property="currExp" column="sh_curr_exp" />
+		<result property="currCd" column="sh_curr_cd" />
+		<result property="bankType" column="sh_bank_type" />
+		<result property="busiTripId" column="sh_busi_trip_id" />
+		<result property="status" column="sh_status" />
+		<result property="approveId" column="sh_approve_id" />
+		<result property="mngNo" column="sh_mng_no" />
+		<result property="webIfYn" column="sh_web_if_yn" />
+		<result property="writeUser" column="sh_write_user" />		
+		<result property="writeDate" column="sh_write_date" />
+		<result property="writeTime" column="sh_write_time" />
+		<result property="changeUser" column="sh_change_user" />
+		<result property="changeDate" column="sh_change_date" />
+		<result property="changeTime" column="sh_change_time" />
+		
+		
+		<collection property="slipDetails" javaType="ArrayList" ofType="SlipDetailDao"
+			column="{mngNoMobile=sh_mng_no_mobile}" select="getSlipDetailDaosByMngNoMobile" />
+
+	</resultMap>
+	
+	<resultMap id="SlipDetailDaoResult" type="SlipDetailDao">
+		<id property="itemSeq" column="sd_item_seq" />
+		<result property="compCd" column="sd_comp_cd" />
+		<result property="mngNoMobile" column="sd_mng_no_mobile" />
+		
+		<result property="acntCd" column="sd_acnt_cd" />
+		<result property="acntNm" column="sd_acnt_nm"/>
+		<result property="drcrType" column="sd_drcr_type" />
+		<result property="vendorCd" column="sd_vendor_cd" />
+		<result property="vendorNm" column="sd_vendor_nm" />
+		<result property="bizArea" column="sd_biz_area" />
+		<result property="bizplcArea" column="sd_bizplc_area" />
+		<result property="paymentCndtn" column="sd_payment_cndtn" />
+		<result property="paymnetMthd" column="sd_paymnet_mthd" />
+		<result property="deptCd" column="sd_dept_cd" />
+		<result property="deptNm" column="sd_dept_nm" />
+		<result property="amtTot" column="sd_amt_tot" />		
+		<result property="amtSup" column="sd_amt_sup" />
+		<result property="amtVat" column="sd_amt_vat" />
+		<result property="vatCd" column="sd_vat_cd" />
+		<result property="vatNm" column="sd_vat_nm" />
+		<result property="textD" column="sd_text_d" />
+		<result property="ratingPoint" column="sd_rating_point" />
+		<result property="ratingComment" column="sd_rating_comment" />
+		<result property="writeUser" column="sd_write_user" />		
+		<result property="writeDate" column="sd_write_date" />
+		<result property="writeTime" column="sd_write_time" />
+		
+		<result property="changeUser" column="sd_change_user" />
+		<result property="changeDate" column="sd_change_date" />
+		<result property="changeTime" column="sd_change_time" />
+
+	</resultMap>
+	
+	<select id="getSlipDetailDaosByMngNoMobile" resultMap="SlipDetailDaoResult">
+		SELECT	<include refid="com.hsys.ham.engine.db.common.sql.SlipDetailDaoColumns">
+					<property name="tableAlias" value="sd" />
+					<property name="prefix" value="sd_" />
+				</include>
+
+			FROM 	SLIP_D sd
+	
+			where 	sd.mng_no_mobile = #{mngNoMobile}
+			
+			order by	sd.item_seq	asc
+	</select>
+	
+	<select id="getSlipHeaderDaoByMngNoMobile" resultMap="SlipHeaderDaoResult">
+		SELECT	<include refid="com.hsys.ham.engine.db.common.sql.SlipHeaderDaoColumns">
+					<property name="tableAlias" value="sh" />
+					<property name="prefix" value="sh_" />
+				</include>
+
+			FROM 	SLIP_H sh
+	
+			where 	sh.mng_no_mobile = #{mngNoMobile}
+	</select>
+	
+
+
+	<insert id="saveSlipHeaderDaoAndGetMngNoMobile" parameterType="SlipHeaderDao" useGeneratedKeys="true">
+		INSERT	INTO	SLIP_H 
+				
+				(  COMP_CD, MNG_NO_MOBILE, POS_DATE, EVI_DATE, TEXT_H, 
+											CURR_CD, BUSI_TRIP_ID, STATUS, WRITE_USER, WRITE_DATE, WRITE_TIME, CHANGE_USER, CHANGE_DATE, CHANGE_TIME )
+											 
+				VALUES 
+				
+				(#{compCd}, 'MS'||TO_CHAR(sysdate,'yyyymmdd')||SEQ_SLIP_H_NO.NEXTVAL, #{posDate}, #{eviDate}, #{textH}, 
+											#{currCd}, #{busiTripId}, #{status},#{writeUser},#{writeDate},#{writeTime},#{changeUser},#{changeDate},#{changeTime} )
+				
+				<selectKey keyProperty="mngNoMobile" resultType="String" order="AFTER"> 
+					SELECT	'MS'||TO_CHAR(sysdate,'yyyymmdd')||SEQ_SLIP_H_NO.CURRVAL
+						FROM	DUAL 
+				</selectKey>
+
+	</insert>
+	
+	
+	<update id="modifySlipHeaderDao" parameterType="SlipHeaderDao">
+		update	SLIP_H
+			<set>
+				<if test="status != null">	status	=	#{status},	</if>
+				<if test="posDate != null">	POS_DATE	=	#{posDate},	</if>
+				<if test="eviDate != null">	EVI_DATE	=	#{eviDate},	</if>
+				<if test="textH != null">	TEXT_H	=	#{textH},	</if>
+				<if test="currCd != null">	CURR_CD	=	#{currCd},	</if>
+				BUSI_TRIP_ID	=	#{busiTripId},
+		    	<if test="changeUser != null">	CHANGE_USER	=	#{changeUser},	</if>
+		    	<if test="changeDate != null">	CHANGE_DATE	=	#{changeDate},	</if>
+		    	<if test="changeTime != null">	CHANGE_TIME	=	#{changeTime}	</if>
+			</set>
+		    where	MNG_NO_MOBILE	=	#{mngNoMobile}
+	</update>
+	
+	<delete id="deleteSlipHeaderDaoByMngNoMobile">
+		DELETE	
+			FROM	SLIP_H
+			WHERE	MNG_NO_MOBILE	= #{mngNoMobile}
+	</delete>
+
+</mapper>

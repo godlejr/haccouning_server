@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hsys.ham.repository.CardHistoryRepository">
+
+	<!-- Result Map -->
+	<resultMap id="CardCompResult" type="CardCompDao">
+		<id property="compCd" column="card_comp_comp_cd" />
+		<result property="compNm" column="card_comp_comp_nm" />
+		<result property="compPhone" column="card_comp_comp_phone" />
+		<result property="cdate" column="card_comp_cdate" />
+		<result property="udate" column="card_comp_udate" />
+	</resultMap>
+	
+
+	<resultMap id="CardHistoryResult" type="CardHistoryDao">
+		<result property="rownum" column="card_history_rownum" />
+		<result property="seqNo" column="card_history_seq_no" />
+		<result property="compCd" column="card_history_comp_cd" />
+		<result property="transDate" column="card_history_trans_date" />
+		<result property="transTime" column="card_history_trans_time" />
+		<result property="cardNo" column="card_history_card_no" />
+		<result property="amtTot" column="card_history_amt_tot" />
+		<result property="currCd" column="card_history_curr_cd" />
+		<result property="abroadYn" column="card_history_abroad_yn" />
+		<result property="cancPartYn" column="card_history_canc_part_yn" />
+		<result property="empNo" column="card_history_emp_no" />
+		<result property="mngNoMobile" column="card_history_mng_no_mobile" />
+		<result property="vendorNm" column="card_history_vendor_nm" />
+		<result property="status" column="card_history_status" />
+		<result property="cdate" column="card_history_cdate" />
+		<result property="udate" column="card_history_udate" />
+		
+		<association property="cardCompDao" column="card_history_card_comp_cd" javaType="CardCompDao"  resultMap="CardCompResult" />
+	</resultMap>
+	
+
+	
+	<select id="getCardHistoryDaosByStatusAndCompCdAndEmpNoAndOffsetAndLimitOrderByTransDateAndTransTimeDesc" resultMap="CardHistoryResult">
+		SELECT * FROM (
+				SELECT	al.*, 
+						ROWNUM as card_history_rownum
+						FROM(
+							SELECT	<include refid="com.hsys.ham.engine.db.common.sql.CardHistoryDaoColumns">
+										<property name="tableAlias" value="ch"/>
+										<property name="prefix" value="card_history_"/>
+									</include>
+									,
+									<include refid="com.hsys.ham.engine.db.common.sql.CardCompDaoColumns">
+										<property name="tableAlias" value="cc"/>
+										<property name="prefix" value="card_comp_"/>
+									</include>
+									
+									FROM 	CARD_LIST_MOBILE ch,
+											(SELECT	DISTINCT
+													comp_cd,
+													comp_nm,
+													'' as cdate,
+													'' as udate,
+													'' as comp_phone
+											   FROM	CARD_COMP ) cc
+					       				  
+					 				WHERE	ch.comp_cd	=	#{compCd}	and
+					 						ch.emp_no	=	#{empNo}	and
+					 						ch.status	=	#{status}	and
+					 						ch.card_comp_cd	=	cc.comp_cd	
+					 						
+					 				ORDER BY
+								            ch.trans_date DESC,
+								            ch.trans_time DESC
+										
+						)	al	
+				<![CDATA[		
+						WHERE	ROWNUM	< 	#{offset} + #{limit} 	
+				)
+				WHERE	card_history_rownum	>= 	#{offset}
+				]]>
+			
+												
+	</select>
+	
+	<select id="getCardHistoryDaoBySeqNo" resultMap="CardHistoryResult">
+		SELECT	<include refid="com.hsys.ham.engine.db.common.sql.CardHistoryDaoColumns">
+					<property name="tableAlias" value="ch"/>
+					<property name="prefix" value="card_history_"/>
+				</include>
+				,
+				<include refid="com.hsys.ham.engine.db.common.sql.CardCompDaoColumns">
+					<property name="tableAlias" value="cc"/>
+					<property name="prefix" value="card_comp_"/>
+				</include>
+				
+				FROM 	CARD_LIST_MOBILE ch,
+						(SELECT	DISTINCT
+								comp_cd,
+								comp_nm,
+								'' as cdate,
+								'' as udate,
+								'' as comp_phone
+						   FROM	CARD_COMP ) cc
+       				  
+ 				WHERE	ch.card_comp_cd	=	cc.comp_cd	and
+ 						ch.seq_no	=	#{seqNo}											
+	</select>
+	
+	<select id="getCardHistoryDaoByMngNoMobile" resultMap="CardHistoryResult">
+		SELECT	<include refid="com.hsys.ham.engine.db.common.sql.CardHistoryDaoColumns">
+					<property name="tableAlias" value="ch"/>
+					<property name="prefix" value="card_history_"/>
+				</include>
+				,
+				<include refid="com.hsys.ham.engine.db.common.sql.CardCompDaoColumns">
+					<property name="tableAlias" value="cc"/>
+					<property name="prefix" value="card_comp_"/>
+				</include>
+				
+				FROM 	CARD_LIST_MOBILE ch,
+						(SELECT	DISTINCT
+								comp_cd,
+								comp_nm,
+								'' as cdate,
+								'' as udate,
+								'' as comp_phone
+						   FROM	CARD_COMP ) cc
+       				  
+ 				WHERE	ch.card_comp_cd	=	cc.comp_cd	and
+ 						ch.mng_no_mobile	=	#{MngNoMobile}											
+	</select>
+	
+	<select id="getCardHistoryDaoCountByStatusAndEmpNo" resultType="Integer">
+		<include refid="com.hsys.ham.engine.db.common.sql.selectCount">
+			<property name="alias" value="total"/>
+			<property name="table" value="CARD_LIST_MOBILE"/>
+			<property name="column" value="status"/>
+		</include> #{status} 
+		<include refid="com.hsys.ham.engine.db.common.sql.addColumn">
+			<property name="column" value="emp_no"/>
+		</include>  #{empNo} 
+		
+	</select>
+	
+	<insert id="saveCardHistoryDaoAndGetSeqno" parameterType="CardHistoryDao" useGeneratedKeys="true">
+		INSERT	INTO	CARD_LIST_MOBILE 
+				
+				( SEQ_NO, COMP_CD, TRANS_DATE, TRANS_TIME, CARD_NO, CARD_COMP_CD, 
+											AMT_TOT, CURR_CD, ABROAD_YN, CANC_PART_YN, EMP_NO, MNG_NO_MOBILE, VENDOR_NM, STATUS, MESSAGE )
+											 
+				VALUES 
+				
+				( SEQ_SMS_NO.NEXTVAL, #{compCd}, #{transDate}, #{transTime}, #{cardNo}, #{cardCompDao.compCd}, 
+											#{amtTot}, #{currCd}, #{abroadYn},#{cancPartYn},#{empNo},#{mngNoMobile},#{vendorNm}, #{status}, #{message} )
+				
+				<selectKey keyProperty="seqNo" resultType="Long" order="AFTER"> 
+					SELECT	SEQ_SMS_NO.CURRVAL
+						FROM	DUAL 
+				</selectKey>
+
+	</insert>
+	
+	
+	<update id="modifyCardHistoryDao" parameterType="CardHistoryDao">
+		update	CARD_LIST_MOBILE
+			 <set>
+		      <if test="status != null">	status	=	#{status},	</if>
+		      <if test="vanMappingYn != null">	van_mapping_yn	=	#{vanMappingYn},	</if>
+		      	mng_no_mobile	=	#{mngNoMobile}	
+		    </set>
+		    where	seq_no	=	#{seqNo}
+	</update>
+	
+	<update id="modifyCardHistoryDaoByMngNoMobile" parameterType="CardHistoryDao">
+		update	CARD_LIST_MOBILE
+			 <set>
+		      <if test="status != null">	status	=	#{status},	</if>
+		      <if test="vanMappingYn != null">	van_mapping_yn	=	#{vanMappingYn}	</if>
+		    </set>
+		    where	mng_no_mobile	=	#{mngNoMobile}
+	</update>
+	
+	<delete id="deleteCardHistoryDaoByMngNoMobile">
+		DELETE	
+			FROM	CARD_LIST_MOBILE
+			WHERE	MNG_NO_MOBILE	= #{mngNoMobile}
+	</delete>
+	
+	<delete id="deleteCardHistoryDaoBySeqNo">
+		DELETE	
+			FROM	CARD_LIST_MOBILE
+			WHERE	SEQ_NO	= #{seqNo}
+	</delete>
+	
+	
+</mapper>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hsys.ham.repository.CardCompRepository">
+
+	<!-- Result Map -->
+	<resultMap id="CardCompResult" type="CardCompDao">
+		<id property="compCd" column="card_comp_comp_cd" />
+		<result property="compNm" column="card_comp_comp_nm" />
+		<result property="compPhone" column="card_comp_comp_phone" />
+		<result property="cdate" column="card_comp_cdate" />
+		<result property="udate" column="card_comp_udate" />
+	</resultMap>
+	
+	
+
+	
+	<select id="getCardCompDaoByCompPhone" resultMap="CardCompResult">
+		SELECT	<include refid="com.hsys.ham.engine.db.common.sql.CardCompDaoColumns">
+					<property name="tableAlias" value="cc"/>
+					<property name="prefix" value="card_comp_"/>
+				</include>
+				
+				FROM 	CARD_COMP	cc
+       				  
+ 				WHERE	cc.comp_phone	=	#{compPhone}
+							
+	</select>
+	
+
+	
+	
+</mapper>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hsys.ham.repository.UserRepository">
+
+	<!-- Result Map -->
+	<resultMap id="UserResult" type="UserDao">
+		<result property="compCd" column="user_comp_cd" />
+		<result property="empNo" column="user_emp_no" />
+		<result property="loginId" column="user_login_id" />
+		<result property="loginPw" column="user_login_pw" />
+		<result property="compNm" column="user_comp_nm" />
+		<result property="empNm" column="user_emp_nm" />
+		<result property="endDate" column="user_end_date" />
+		<result property="siteCd" column="user_site_cd" />
+		<result property="siteNm" column="user_site_nm" />
+		<result property="deptCd" column="user_dept_cd" />
+		<result property="deptNm" column="user_dept_nm" />
+		<result property="erpId" column="user_erp_id" />
+		<result property="erpVendorId" column="user_erp_vendor_id" />
+		<result property="accessToken" column="user_access_token" />
+		<result property="deviceId" column="user_device_id" />
+		<result property="loginStatus" column="user_login_status" />
+		<result property="cdate" column="user_cdate" />
+		<result property="udate" column="user_udate" />
+	</resultMap>
+	
+	<!-- 아이디 패스워드로 로그인  -->
+	<select id="getUserDaoByIdAndPassword" resultMap="UserResult">
+		SELECT	<include refid="com.hsys.ham.engine.db.common.sql.UserDaoColumns">
+					<property name="tableAlias" value="u"/>
+					<property name="prefix" value="user_"/>
+				</include>
+				
+				FROM 	MST_USER u
+       				  
+ 				WHERE	u.login_id = #{loginId} and
+ 						u.login_pw = #{loginPw}
+ 				
+	</select>
+	
+	
+	<select id="getUserDaoByCompCdAndEmpNo" resultMap="UserResult">
+		SELECT	<include refid="com.hsys.ham.engine.db.common.sql.UserDaoColumns">
+					<property name="tableAlias" value="u"/>
+					<property name="prefix" value="user_"/>
+				</include>
+				
+				FROM 	MST_USER u
+       				  
+ 				WHERE	u.comp_cd = #{compCd} and
+ 						u.emp_no = #{empNo}
+	
+	</select>
+	
+	<!-- 유저 정보 수정 -->
+	<update id="editUserDao" parameterType="UserDao">
+		UPDATE	MST_USER
+			 <set>
+			 
+		      <if test="loginPw != null">		login_Pw	=	#{loginPw},	</if>
+		      <if test="compNm != null">		comp_Nm	=	#{compNm},	</if>
+		      <if test="empNm != null">			emp_Nm	=	#{empNm},	</if>
+		      <if test="startDate != null">		start_Date	=	#{startDate},	</if>
+		      <if test="endDate != null">		end_Date	=	#{endDate},	</if>
+		      <if test="siteCd != null">		site_Cd	=	#{siteCd},	</if>
+		      <if test="siteNm != null">		site_Nm	=	#{siteNm},	</if>
+		      <if test="deptCd != null">		dept_Cd	=	#{deptCd},	</if>
+		      <if test="deptNm != null">		dept_Nm	=	#{deptNm},	</if>
+		      <if test="erpId != null">			erp_Id	=	#{erpId},	</if>
+		      <if test="erpVendorId != null">	erp_Vendor_Id	=	#{erpVendorId},	</if>
+		      <if test="accessToken != null">	access_Token	=	#{accessToken}	</if>
+   		      <if test="deviceId != null">		device_Id	=	#{deviceId}	</if>
+		      <if test="loginStatus > 0">		login_Status	=	#{loginStatus}	</if>
+   		      <if test="udate != null">			udate	=	#{udate}	</if>
+		      
+		    </set>
+		    where	comp_cd	=	#{compCd}	and
+		    		emp_no	=	#{empNo}
+	</update>
+	
+	
+</mapper>

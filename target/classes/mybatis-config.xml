@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+   PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<!-- 마이바티스 설정 -->
+	<settings>
+		<setting name="logImpl" value="LOG4J" />
+		<setting name="cacheEnabled" value="true" />
+		<setting name="lazyLoadingEnabled" value="true" />
+		<setting name="multipleResultSetsEnabled" value="true" />
+		<setting name="useColumnLabel" value="true" />
+		<setting name="useGeneratedKeys" value="false" />
+		<setting name="autoMappingBehavior" value="PARTIAL" />
+		<setting name="defaultExecutorType" value="SIMPLE" />
+		<setting name="defaultStatementTimeout" value="25" />
+		<setting name="safeRowBoundsEnabled" value="false" />
+		<setting name="mapUnderscoreToCamelCase" value="true" />
+		<setting name="localCacheScope" value="SESSION" />
+		<setting name="jdbcTypeForNull" value="NULL" />
+		<setting name="lazyLoadTriggerMethods"
+			value="equals,clone,hashCode,toString" />
+	</settings>
+
+	<!-- 타입 별칭 설정 -->
+	<typeAliases>
+		<typeAlias type="com.hsys.ham.dao.UserDao" alias="UserDao"></typeAlias>
+		<typeAlias type="com.hsys.ham.dao.CardHistoryDao"
+			alias="CardHistoryDao"></typeAlias>
+		<typeAlias type="com.hsys.ham.dao.CardCompDao"
+			alias="CardCompDao"></typeAlias>
+		<typeAlias type="com.hsys.ham.dao.RegisteredCardDao"
+			alias="RegisteredCardDao"></typeAlias>
+		<typeAlias type="com.hsys.ham.dao.SlipDetailDao"
+			alias="SlipDetailDao"></typeAlias>
+		<typeAlias type="com.hsys.ham.dao.SlipHeaderDao"
+			alias="SlipHeaderDao"></typeAlias>
+		<typeAlias type="com.hsys.ham.dao.AcntDao" alias="AcntDao"></typeAlias>
+		<typeAlias type="com.hsys.ham.dao.DeptDao" alias="DeptDao"></typeAlias>
+		<typeAlias type="com.hsys.ham.dao.BudgetDao" alias="BudgetDao"></typeAlias>
+		<typeAlias type="com.hsys.ham.dao.BudgetCheckDao" alias="BudgetCheckDao"></typeAlias>
+		<typeAlias type="com.hsys.ham.dao.TripDao" alias="TripDao"></typeAlias>
+		
+
+	</typeAliases>
+
+	<mappers>
+		<!-- 공통 SQL 경로 -->
+		<mapper resource="commonSql.xml" />
+
+		<!-- mapper 경로 -->
+		<mapper resource="mappers/UserMapper.xml" />
+		<mapper resource="mappers/CardHistoryMapper.xml" />
+		<mapper resource="mappers/CardCompMapper.xml" />
+		<mapper resource="mappers/SlipHeaderMapper.xml" />
+		<mapper resource="mappers/SlipDetailMapper.xml" />
+		
+		<mapper resource="mappers/OraFunctionCallMapper.xml" />
+	</mappers>
+
+</configuration>

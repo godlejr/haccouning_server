@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hsys.ham.engine.db.common.sql">
+
+	<!-- SQL 공통 함수  -->
+
+	<sql id="selectCount">
+		select 	count(*) as ${alias}
+				from ${table}
+				where ${column} =
+	</sql>
+
+	<sql id="addColumn">
+		AND ${column} =
+	</sql>
+
+
+	<!-- 테이블 별 컬럼  -->
+	
+	<!-- 유저 컬럼 -->
+	<sql id="UserDaoColumns">
+		${tableAlias}.comp_cd as ${prefix}comp_cd,
+		${tableAlias}.emp_no as ${prefix}emp_no,
+		${tableAlias}.login_id as ${prefix}login_id,
+		${tableAlias}.login_pw as ${prefix}login_pw,
+		${tableAlias}.comp_nm as ${prefix}comp_nm,
+		${tableAlias}.emp_nm as ${prefix}emp_nm,
+		${tableAlias}.start_date as ${prefix}start_date,
+		${tableAlias}.end_date as ${prefix}end_date,
+		${tableAlias}.site_cd as ${prefix}site_cd,
+		${tableAlias}.site_nm as ${prefix}site_nm,
+		${tableAlias}.dept_cd as ${prefix}dept_cd,
+		${tableAlias}.dept_nm as ${prefix}dept_nm,
+		${tableAlias}.erp_id as ${prefix}erp_id,
+		${tableAlias}.erp_vendor_id as ${prefix}erp_vendor_id,
+		${tableAlias}.access_token as ${prefix}access_token,
+		${tableAlias}.device_id as ${prefix}device_id,
+		${tableAlias}.login_status as ${prefix}login_status,
+		${tableAlias}.cdate as ${prefix}cdate,
+		${tableAlias}.udate as ${prefix}udate
+	</sql>
+	
+	<sql id="CardHistoryDaoColumns">
+		${tableAlias}.seq_no as ${prefix}seq_no,
+		${tableAlias}.comp_cd as ${prefix}comp_cd,
+		${tableAlias}.trans_date as ${prefix}trans_date,
+		${tableAlias}.trans_time as ${prefix}trans_time,
+		${tableAlias}.card_no as ${prefix}card_no,
+		${tableAlias}.card_comp_cd as ${prefix}card_comp_cd,
+		${tableAlias}.amt_tot as ${prefix}amt_tot,
+		${tableAlias}.curr_cd as ${prefix}curr_cd,
+		${tableAlias}.abroad_yn as ${prefix}abroad_yn,
+		${tableAlias}.canc_part_yn as ${prefix}canc_part_yn,
+		${tableAlias}.emp_no as ${prefix}emp_no,
+		${tableAlias}.mng_no_mobile as ${prefix}mng_no_mobile,
+		${tableAlias}.vendor_nm as ${prefix}vendor_nm,
+		${tableAlias}.status as ${prefix}status,
+		${tableAlias}.van_mapping_yn as ${prefix}van_mapping_yn,
+		${tableAlias}.cdate as ${prefix}cdate,
+		${tableAlias}.udate as ${prefix}udate
+	</sql>
+	
+	<sql id="CardCompDaoColumns">
+		${tableAlias}.comp_cd as ${prefix}comp_cd,
+		${tableAlias}.comp_nm as ${prefix}comp_nm,
+		${tableAlias}.comp_phone as ${prefix}comp_phone,
+		${tableAlias}.cdate as ${prefix}cdate,
+		${tableAlias}.udate as ${prefix}udate
+	</sql>
+	
+	<sql id="RegisteredCardDaoColumns">
+		${tableAlias}.emp_no as ${prefix}emp_no,
+		${tableAlias}.card_no as ${prefix}card_no,
+		${tableAlias}.local_brand as ${prefix}local_brand,
+		${tableAlias}.validity as ${prefix}validity
+	</sql>
+	
+	<sql id="SlipHeaderDaoColumns">
+		${tableAlias}.comp_cd as ${prefix}comp_cd,
+		${tableAlias}.mng_no_mobile as ${prefix}mng_no_mobile,
+		${tableAlias}.pos_date as ${prefix}pos_date,
+		${tableAlias}.evi_date as ${prefix}evi_date,
+		${tableAlias}.text_h as ${prefix}text_h,
+		${tableAlias}.site_cd as ${prefix}site_cd,
+		${tableAlias}.curr_exp as ${prefix}curr_exp,
+		${tableAlias}.curr_cd as ${prefix}curr_cd,
+		${tableAlias}.bank_type as ${prefix}bank_type,
+		${tableAlias}.busi_trip_id as ${prefix}busi_trip_id,
+		${tableAlias}.status as ${prefix}status,
+		${tableAlias}.approve_id as ${prefix}approve_id,
+		${tableAlias}.mng_no as ${prefix}mng_no,
+		${tableAlias}.web_if_yn as ${prefix}web_if_yn,
+		${tableAlias}.write_user as ${prefix}write_user,
+		${tableAlias}.write_date as ${prefix}write_date,
+		${tableAlias}.write_time as ${prefix}write_time,
+		${tableAlias}.change_user as ${prefix}change_user,
+		${tableAlias}.change_date as ${prefix}change_date,
+		${tableAlias}.change_time as ${prefix}change_time
+	</sql>
+	
+	<sql id="SlipDetailDaoColumns">
+		${tableAlias}.comp_cd as ${prefix}comp_cd,
+		${tableAlias}.mng_no_mobile as ${prefix}mng_no_mobile,
+		${tableAlias}.item_seq as ${prefix}item_seq,
+		${tableAlias}.acnt_cd as ${prefix}acnt_cd,
+		${tableAlias}.acnt_nm as ${prefix}acnt_nm,
+		${tableAlias}.drcr_type as ${prefix}drcr_type,
+		${tableAlias}.vendor_cd as ${prefix}vendor_cd,
+		${tableAlias}.vendor_nm as ${prefix}vendor_nm,
+		${tableAlias}.biz_area as ${prefix}biz_area,
+		${tableAlias}.bizplc_area as ${prefix}bizplc_area,
+		${tableAlias}.payment_cndtn as ${prefix}payment_cndtn,
+		${tableAlias}.paymnet_mthd as ${prefix}paymnet_mthd,
+		${tableAlias}.dept_cd as ${prefix}dept_cd,
+		${tableAlias}.dept_nm as ${prefix}dept_nm,
+		${tableAlias}.amt_tot as ${prefix}amt_tot,
+		${tableAlias}.amt_sup as ${prefix}amt_sup,
+		${tableAlias}.amt_vat as ${prefix}amt_vat,
+		${tableAlias}.vat_cd as ${prefix}vat_cd,
+		${tableAlias}.vat_nm as ${prefix}vat_nm,
+		${tableAlias}.text_d as ${prefix}text_d,
+		${tableAlias}.rating_point as ${prefix}rating_point,
+		${tableAlias}.rating_comment as ${prefix}rating_comment,
+		${tableAlias}.write_user as ${prefix}write_user,
+		${tableAlias}.write_date as ${prefix}write_date,
+		${tableAlias}.write_time as ${prefix}write_time,
+		${tableAlias}.change_user as ${prefix}change_user,
+		${tableAlias}.change_date as ${prefix}change_date,
+		${tableAlias}.change_time as ${prefix}change_time
+	</sql>
+	
+	
+
+	
+
+</mapper>

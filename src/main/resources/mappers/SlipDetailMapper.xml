@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hsys.ham.repository.SlipDetailRepository">
+
+	<insert id="saveSlipDetailDaos" parameterType="List">
+		INSERT	INTO	SLIP_D	
+			(ITEM_SEQ, COMP_CD, MNG_NO_MOBILE, ACNT_CD, ACNT_NM, VENDOR_CD, VENDOR_NM, DEPT_CD, DEPT_NM, AMT_TOT, TEXT_D, WRITE_USER, WRITE_DATE, WRITE_TIME, CHANGE_USER, CHANGE_DATE, CHANGE_TIME)
+		
+			select trim(SEQ_SLIP_D_NO.NEXTVAL), A.* from(
+		 <foreach item="slipDetail" collection="list" separator="UNION ALL " >
+		   select #{slipDetail.compCd} as COMP_CD,
+		          #{slipDetail.mngNoMobile} as MNG_NO_MOBILE,
+		          #{slipDetail.acntCd} as ACNT_CD,
+		          #{slipDetail.acntNm} as ACNT_NM,
+		          #{slipDetail.vendorCd} as VENDOR_CD,
+		          #{slipDetail.vendorNm} as VENDOR_NM,
+		          #{slipDetail.deptCd} as DEPT_CD,
+		          #{slipDetail.deptNm} as DEPT_NM, 
+		          #{slipDetail.amtTot} as AMT_TOT,
+		          #{slipDetail.textD} as TEXT_D,
+		          #{slipDetail.writeUser} as WRITE_USER,
+		          #{slipDetail.writeDate} as WRITE_DATE,
+		          #{slipDetail.writeTime} as WRITE_TIME,
+		          #{slipDetail.changeUser} as CHANGE_USER, 
+		          #{slipDetail.changeDate} as CHANGE_DATE,
+		          #{slipDetail.changeTime} as CHANGE_TIME
+		   from dual
+		 </foreach>) A
+	</insert>
+
+
+	<update id="modifySlipDetailDaos" parameterType="List">
+	    <foreach collection="list" item="slipDetail" separator=";">
+	        update	SLIP_D 
+	        	<set>
+				<if test="slipDetail.acntCd != null">	ACNT_CD	=	#{slipDetail.acntCd},	</if>
+				<if test="slipDetail.acntNm != null">	ACNT_NM	=	#{slipDetail.acntNm},	</if>
+				<if test="slipDetail.vendorCd != null">	VENDOR_CD	=	#{slipDetail.vendorCd},	</if>
+				<if test="slipDetail.vendorNm != null">	VENDOR_NM	=	#{slipDetail.vendorNm},	</if>
+				<if test="slipDetail.deptCd != null">	DEPT_CD	=	#{slipDetail.deptCd},	</if>
+				<if test="slipDetail.deptNm != null">	DEPT_NM	=	#{slipDetail.deptNm},	</if>
+		    	<if test="slipDetail.amtTot != null">	AMT_TOT	=	#{slipDetail.amtTot},	</if>
+		    	<if test="slipDetail.textD != null">	TEXT_D	=	#{slipDetail.textD},	</if>
+		    	<if test="slipDetail.changeUser != null">	CHANGE_USER	=	#{slipDetail.changeUser},	</if>
+		    	<if test="slipDetail.changeDate != null">	CHANGE_DATE	=	#{slipDetail.changeDate},	</if>
+		    	<if test="slipDetail.changeTime != null">	CHANGE_TIME	=	#{slipDetail.changeTime}	</if>
+			</set>
+		    where	MNG_NO_MOBILE	=	#{slipDetail.mngNoMobile}	AND
+		    		ITEM_SEQ	=	#{slipDetail.itemSeq}
+	    </foreach>
+	</update>
+	
+	<delete id="deleteSlipDetailDaoByMngNoMobile">
+		DELETE	
+			FROM	SLIP_D
+			WHERE	MNG_NO_MOBILE	= #{mngNoMobile}
+	</delete>
+
+
+</mapper>
